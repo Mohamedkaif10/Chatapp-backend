@@ -1,5 +1,5 @@
 
-# Chat Application Backend
+# KumoTalk Backend
 
 This is the backend for the **Real-Time Chat Application** using **Node.js**, **Express**, **Socket.IO**, and **MongoDB**. The backend handles user authentication, real-time messaging via websockets, and managing private and group chats.
 
@@ -144,3 +144,4 @@ The backend verifies the JWT token sent by the client through Socket.IO when a c
 - Ensure the JWT token is properly generated and stored in `localStorage` on the frontend.
 - Verify that the token is included in the headers of requests and sent through Socket.IO for authentication.
 
+# Mohamed Kaif , Indian Institute Of Technology Hyderabad , Industrial chemistry
