@@ -36,8 +36,8 @@ Before you begin, ensure you have met the following requirements:
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/mohamedkaif10/chat-backend.git
-cd chat-backend
+git clone https://github.com/mohamedkaif10/chatapp-backend.git
+cd Server
 ```
 
 ### 2. Install Dependencies
