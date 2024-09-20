@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const Message = require("../models/message");
 
 let connectedUsers = [];
 
@@ -33,28 +34,43 @@ const initializeSocket = (io) => {
   io.on("connection", (socket) => {
     console.log(`${socket.user.username} connected`);
 
-    socket.on("chatMessage", (msg) => {
+    // Group Chat Messages
+    socket.on("chatMessage", async (msg) => {
       const messageData = {
+        userId: socket.user._id,
         username: socket.user.username,
         message: msg,
         timestamp: new Date(),
       };
+      const newMessage = new Message(messageData);
+      await newMessage.save();
 
       io.emit("message", messageData);
       console.log("Broadcasting message: ", messageData);
     });
+    socket.on("privateMessage", async ({ recipientId, message }) => {
+      const messageData = {
+        userId: socket.user._id,
+        username: socket.user.username,
+        message: message,
+        recipientId: recipientId,
+        timestamp: new Date(),
+      };
 
-    socket.on("privateMessage", ({ recipientId, message }) => {
-      console.log(
-        `Private message from ${socket.user.username} to user ${recipientId}: ${message}`
-      );
+      const newMessage = new Message(messageData);
+      await newMessage.save();
 
       io.to(recipientId).emit("privateMessage", {
         from: socket.user.username,
         message,
         timestamp: new Date(),
       });
+
+      console.log(
+        `Private message from ${socket.user.username} to user ${recipientId}: ${message}`
+      );
     });
+
     socket.on("typing", (recipientId) => {
       io.to(recipientId).emit("typing", socket.user.username);
     });
@@ -62,6 +78,7 @@ const initializeSocket = (io) => {
     socket.on("stopTyping", (recipientId) => {
       io.to(recipientId).emit("stopTyping", socket.user.username);
     });
+
     socket.on("disconnect", () => {
       console.log(`${socket.user.username} disconnected`);
       connectedUsers = connectedUsers.filter(
@@ -70,6 +87,7 @@ const initializeSocket = (io) => {
     });
   });
 };
+
 const getConnectedUsers = () => {
   return connectedUsers;
 };
